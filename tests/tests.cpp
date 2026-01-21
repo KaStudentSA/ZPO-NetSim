@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-
+#include "helpers.hxx"
 #include "package.hxx"
 #include "storage_types.hxx"
 
@@ -55,7 +55,7 @@ TEST(PackageTest, IsSettingIDsCorrect) {
 }
 
 /// Odkomentuj aby wykonało się
-/*
+
 TEST(PackageQueueTest, IsFifoCorrect) {
     PackageQueue q(PackageQueueType::FIFO);
     q.push(Package(1));
@@ -79,4 +79,3 @@ TEST(PackageQueueTest, IsLifoCorrect) {
     p = q.pop();
     EXPECT_EQ(p.get_id(), 1);
 }
-*/
