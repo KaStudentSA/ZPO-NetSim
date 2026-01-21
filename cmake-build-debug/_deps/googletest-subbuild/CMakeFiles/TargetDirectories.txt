@@ -1,3 +1,0 @@
-D:/Anastasiya/uczelnia/ZPO/NetSim/ZPO-NetSim/cmake-build-debug/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
-D:/Anastasiya/uczelnia/ZPO/NetSim/ZPO-NetSim/cmake-build-debug/_deps/googletest-subbuild/CMakeFiles/edit_cache.dir
-D:/Anastasiya/uczelnia/ZPO/NetSim/ZPO-NetSim/cmake-build-debug/_deps/googletest-subbuild/CMakeFiles/rebuild_cache.dir
