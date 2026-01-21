@@ -1,5 +1,0 @@
-if(EXISTS "C:/Users/lizar/agh_2025-2026/ZPO/NetSim/cmake-build-debug/Tests[1]_tests.cmake")
-  include("C:/Users/lizar/agh_2025-2026/ZPO/NetSim/cmake-build-debug/Tests[1]_tests.cmake")
-else()
-  add_test(Tests_NOT_BUILT Tests_NOT_BUILT)
-endif()
