@@ -5,7 +5,6 @@
 #include <package.hxx>
 
 using const_iterator = std::list<Package>::const_iterator;
-
 enum class PackageQueueType {
     FIFO,
     LIFO

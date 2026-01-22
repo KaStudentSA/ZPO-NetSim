@@ -1,4 +1,7 @@
-#include <functional>
+#ifndef NETSIM_TYPES_HXX
+#define NETSIM_TYPES_HXX
 
+#include <functional>
 using ElementID = int;
-using ProbabilityGenerator = std::function<double()>;
+using ProbabilityGenerator = std::function<double()> ;
+#endif
