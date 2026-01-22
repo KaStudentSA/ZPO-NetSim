@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "types.hxx"
+#include "types.hpp"
 
 /*
 public:

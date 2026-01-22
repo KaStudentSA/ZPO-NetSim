@@ -1,8 +1,8 @@
-#include "package.hxx"
+#include "package.hpp"
 
 // Definicja statycznych pól klasy
-std::set<ElementID> Package::assigned_IDs;
-std::set<ElementID> Package::freed_IDs;
+std::set<ElementID> Package::assigned_IDs = {};
+std::set<ElementID> Package::freed_IDs = {};
 
 // Konstruktor domyślny
 Package::Package() {
@@ -34,6 +34,8 @@ Package::Package(Package&& other) noexcept : id(other.id) {
 // Operator przypisania przenoszący
 Package& Package::operator=(Package&& other) noexcept {
     if (this != &other) {
+        assigned_IDs.erase(this->id);
+        freed_IDs.insert(this->id);
         this->id = other.id;
     }
     return *this;
