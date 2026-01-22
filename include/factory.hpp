@@ -4,7 +4,9 @@
 
 #ifndef NETSIM_FACTORY_HXX
 #define NETSIM_FACTORY_HXX
-#include "types.hxx"
+#include <list>
+
+#include "types.hpp"
 
 template <typename Node>
 class NodeCollection {
@@ -22,7 +24,7 @@ public:
     const_iterator cend() const { return nodes_.cend(); }
 
     void add(Node&& node){nodes_.emplace_back(std::move(node));}
-    void remove_by_id(ElementID id){remove_if(v.begin(), v.end(),
+    void remove_by_id(ElementID id){remove_if(nodes_.begin(), nodes_.end(),
                         [id](Node& node) {
                           return node.id == id;
                         });}
