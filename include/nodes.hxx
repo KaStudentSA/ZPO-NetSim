@@ -17,12 +17,12 @@ using const_iterator = std::list<Package>::const_iterator;
 class IPackageReceiver {
 public:
     virtual void receive_package(Package&&) = 0;
-    virtual ElementID get_id() const;
-    virtual ReceiverType get_receiver_type() const;
-    virtual IPackageStockpile::const_iterator cbegin() const;
-    virtual IPackageStockpile::const_iterator begin() const;
-    virtual IPackageStockpile::const_iterator cend() const;
-    virtual IPackageStockpile::const_iterator end() const;
+    virtual ElementID get_id() const = 0;
+    virtual ReceiverType get_receiver_type() const = 0;
+    virtual const_iterator cbegin() const = 0;
+    virtual const_iterator begin() const = 0;
+    virtual const_iterator cend() const = 0;
+    virtual const_iterator end() const = 0;
 
     virtual ~IPackageReceiver() = default;
 };
@@ -37,26 +37,26 @@ public:
     void add_receiver(IPackageReceiver* r);
     void remove_receiver(IPackageReceiver* r);
     IPackageReceiver* choose_receiver() const;
-    preferences_t& get_preferences() {return preferences_;};
+    const preferences_t& get_preferences() const {return preferences_;};
 
 private:
     ProbabilityGenerator pg_;
     preferences_t preferences_;
 };
-class Storehouse: public IPackageReceiver {
+class Storehouse: public IPackageReceiver{
 public:
-    Storehouse(ElementID id, std::unique_ptr<IPackageReceiver> d = std::make_unique<PackageQueue>(PackageQueueType::LIFO)){id_ = id; d_ = std::move(d);};
+    Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::LIFO));
     void receive_package(Package&& p) override;
     ElementID get_id() const override {return id_;};
     ReceiverType get_receiver_type() const override {return STOREHOUSE;};
 
-    IPackageStockpile::const_iterator cbegin() const override {return d_->cbegin();}
-    IPackageStockpile::const_iterator begin() const override {return d_->begin();}
-    IPackageStockpile::const_iterator cend() const override { return d_->cend();}
-    IPackageStockpile::const_iterator end() const override { return d_->end();}
+    const_iterator cbegin() const override {return d_->cbegin();}
+    const_iterator begin() const override {return d_->begin();}
+    const_iterator cend() const override { return d_->cend();}
+    const_iterator end() const override { return d_->end();}
     IPackageStockpile* get_queue() const {return d_.get();}
-    IPackageReceiver* choose_receiver();
-    IPackageReceiver* get_id();
+
+    IPackageStockpile* get_id() {return d_.get();};
 private:
     ElementID id_;
     std::unique_ptr<PackageQueue> d_;

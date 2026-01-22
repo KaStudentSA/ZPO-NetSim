@@ -1,6 +1,6 @@
 #include "nodes.hxx"
 void Storehouse::receive_package(Package&& p) {
-    d_.push(std::move(p));
+    d_ -> push(std::move(p));
 }
 void ReceiverPreferences::add_receiver(IPackageReceiver *r) {
     preferences_.emplace(r, 1);
