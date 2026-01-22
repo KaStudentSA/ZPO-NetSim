@@ -1,7 +1,7 @@
 //
 // Created by Anastasia on 19.01.2026.
 //
-#include "helpers.hxx"
+#include "helpers.hpp"
 
 #include <cstdlib>
 #include <random>
