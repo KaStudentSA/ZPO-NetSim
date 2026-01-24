@@ -18,19 +18,14 @@ list(FILTER LIB_SOURCES EXCLUDE REGEX "src/main.cpp$")
 
 # Pliki testowe (odkomentuj testy jeśli potrzeba)
 file(GLOB_RECURSE TEST_SOURCES
-#tests/include/config.hpp
-
-#tests/mocks/global_functions_mock.hpp
-#tests/mocks/nodes_mocks.hpp
-
-tests/test/main_gtest.cpp
-#tests/test/test_Factory.cpp
-#tests/test/test_factory_io.cpp
-#tests/test/test_nodes.cpp
-tests/test/test_package.cpp
-#tests/test/test_reports.cpp
-#tests/test/test_simulate.cpp
-tests/test/test_storage_types.cpp
+    tests/main_gtest.cpp
+    #tests/test/test_Factory.cpp
+    #tests/test/test_factory_io.cpp
+    #tests/test/test_nodes.cpp
+    tests/test_package.cpp
+    #tests/test/test_reports.cpp
+    #tests/test/test_simulate.cpp
+    tests/test_storage_types.cpp
 )
 
 # --- CELE (TARGETS) ---

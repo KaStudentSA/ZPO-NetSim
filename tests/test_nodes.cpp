@@ -6,8 +6,8 @@
 #include "storage_types.hpp"
 #include "types.hpp"
 
-#include "nodes_mocks.hpp"
 #include "global_functions_mock.hpp"
+#include "nodes_mocks.hpp"
 
 #include <iostream>
 
