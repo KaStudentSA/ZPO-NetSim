@@ -7,10 +7,10 @@
 #include <memory>
 #include <map>
 #include <list>
-#include "package.hxx"
-#include "storage_types.hxx"
-#include "types.hxx"
-#include "helpers.hxx"
+#include "package.hpp"
+#include "storage_types.hpp"
+#include "types.hpp"
+#include "helpers.hpp"
 enum ReceiverType {WORKER, STOREHOUSE};
 using const_iterator = std::list<Package>::const_iterator;
 
