@@ -7,6 +7,8 @@
 #include <memory>
 #include <map>
 #include <list>
+#include <optional>
+
 #include "package.hpp"
 #include "storage_types.hpp"
 #include "types.hpp"
@@ -61,5 +63,61 @@ private:
     ElementID id_;
     std::unique_ptr<PackageQueue> d_;
 };
+
+class PackageSender
+{
+public:
+    ReceiverPreferences receiver_preferences;
+    PackageSender() = default;
+    PackageSender(PackageSender&&) = default;
+    void send_package();
+    void push_package(Package&& p);
+    const std::optional<Package>& get_sending_buffer() const
+    {
+        return sending_buffer_;
+    };
+private:
+    std::optional<Package> sending_buffer_;
+};
+
+class Ramp : public PackageSender
+{
+public:
+    Ramp(ElementID id, TimeOffset di)
+        : id_(id), delivery_interval_(di) {}
+    void deliver_goods(Time t);
+    TimeOffset get_delivery_interval() const
+    {
+        return delivery_interval_;
+    };
+    ElementID get_id() const
+    {
+        return id_;
+    };
+private:
+    TimeOffset delivery_interval_;
+    ElementID id_;
+};
+
+class Worker: public PackageSender
+    {
+public:
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue>);
+    void do_work(Time t);
+    TimeOffset get_processing_duration() const
+    {
+        return processing_duration_;
+    };
+    std::optional<Time> get_package_processing_start_time() const
+    {
+        return processing_start_time_;
+    };
+private:
+    ElementID id_;
+    TimeOffset processing_duration_;
+    std::optional<Time> processing_start_time_;
+    std::unique_ptr<IPackageQueue> queue_;
+    std::optional<Package> sending_buffer_;
+    };
 
 #endif //NETSIM_NODES_HXX
