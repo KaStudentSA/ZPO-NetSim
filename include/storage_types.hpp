@@ -2,7 +2,7 @@
 #define STORAGE_TYPES_HXX
 
 #include <list>
-#include <package.hxx>
+#include <package.hpp>
 
 using const_iterator = std::list<Package>::const_iterator;
 enum class PackageQueueType {

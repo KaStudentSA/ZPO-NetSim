@@ -7,8 +7,6 @@
 #include <memory>
 #include <map>
 #include <list>
-#include <optional>
-
 #include "package.hxx"
 #include "storage_types.hxx"
 #include "types.hxx"
@@ -64,34 +62,4 @@ private:
     std::unique_ptr<PackageQueue> d_;
 };
 
-class PackageSender
-{
-public:
-    ReceiverPreferences* receiver_preferences_;
-    PackageSender(PackageSender&&) = default;
-    PackageSender(const PackageSender&) = delete;
-    void send_package();
-    void push_package(Package&& p);
-protected:
-    const std::optional<Package>& get_sending_buffer() const;
-};
-
-
-class Ramp : public PackageSender
-{
-public:
-    Ramp(ElementID id, TimeOffset di);
-    ElementID get_id() const;
-    TimeOffset get_delivery_interval() const;
-    void deliver_goods(Time t) {};
-};
-
-class Worker: public PackageSender, public IPackageReceiver
-{
-public:
-    Worker(ElementID id, TimeOffset di, std::unique_ptr<IPackageQueue> q);
-    void do_work(Time t);
-    TimeOffset get_processing_duration() const;
-    Time get_package_processing_start_time() const;
-};
 #endif //NETSIM_NODES_HXX

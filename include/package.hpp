@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "types.hxx"
+#include "types.hpp"
 
 /*
 public:
@@ -40,8 +40,8 @@ public:
 private:
     ElementID id;
 
-    inline static std::set<ElementID> assigned_IDs;
-    inline static std::set<ElementID> freed_IDs;
+    static std::set<ElementID> assigned_IDs;
+    static std::set<ElementID> freed_IDs;
 };
 
 #endif
