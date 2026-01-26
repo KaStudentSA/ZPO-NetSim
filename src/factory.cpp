@@ -3,39 +3,35 @@
 //
 #include "factory.hpp"
 
-/*
-is_consistent() – sprawdzanie spójności sieci
-
-do_deliveries() – dokonywanie ewentualnych dostaw na rampy
-
-do_package_passing() – dokonywanie ewentualnego
-przekazywania półproduktów
-
-do_work() – dokonywanie ewentualnego przetwarzania
-półproduktów przez robotników
-
-(W praktyce każda z metod do_XXX() powinna jedynie wywoływać
-właściwe metody z klas Ramp i Worker dla każdego elementu z
-właściwej kolekcji węzłów.)
-*/
-
-
 bool Factory::is_consistent()
 {
+    //Implementacja tutaj
     return true;
 }
 
 void Factory::do_deliveries(Time t)
 {
-
+    for (auto& ramp : ramps_)
+    {
+        ramp.deliver_goods(t);
+    }
 }
 
 void Factory::do_package_passing()
 {
+    for (auto& ramp : ramps_) {
+        ramp.send_package();
+    }
 
+    for (auto& worker : workers_) {
+        worker.send_package();
+    }
 }
 
 void Factory::do_work(Time t)
 {
-
+    for (auto& worker : workers_)
+    {
+        worker.do_work(t);
+    }
 }
