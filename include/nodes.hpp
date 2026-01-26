@@ -45,23 +45,26 @@ private:
     ProbabilityGenerator pg_;
     preferences_t preferences_;
 };
-class Storehouse: public IPackageReceiver{
+class Storehouse: public IPackageReceiver, public IPackageStockpile{
 public:
     Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::LIFO));
+
     void receive_package(Package&& p) override;
     ElementID get_id() const override {return id_;};
-    ReceiverType get_receiver_type() const override {return STOREHOUSE;};
+    ReceiverType get_receiver_type() const override {return receiverType_;};
 
-    const_iterator cbegin() const override {return d_->cbegin();}
-    const_iterator begin() const override {return d_->begin();}
-    const_iterator cend() const override { return d_->cend();}
-    const_iterator end() const override { return d_->end();}
-    IPackageStockpile* get_queue() const {return d_.get();}
+    void push(Package&& package) override {d_->push(std::move(package));};
+    bool empty() const override {return d_->empty();};
+    const_iterator begin() const override {return d_->begin();};
+    const_iterator end() const override {return d_->end();};
+    const_iterator cbegin() const override {return d_->cbegin();};
+    const_iterator cend() const override {return d_->cend();};
+    size_t size() const override {return d_->size();};
 
-    IPackageStockpile* get_id() {return d_.get();};
 private:
     ElementID id_;
     std::unique_ptr<PackageQueue> d_;
+    ReceiverType receiverType_ = STOREHOUSE;
 };
 
 class PackageSender
