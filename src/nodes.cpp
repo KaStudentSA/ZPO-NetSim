@@ -29,3 +29,7 @@ IPackageReceiver *ReceiverPreferences::choose_receiver() const {
     }
     return nullptr;
 }
+
+void Ramp::deliver_goods(Time t) {
+
+}

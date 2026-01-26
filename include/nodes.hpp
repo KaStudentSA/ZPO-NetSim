@@ -50,6 +50,7 @@ public:
 protected:
     ProbabilityGenerator pg_;
 };
+
 class Storehouse: public IPackageReceiver, public IPackageStockpile{
 public:
     Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d = std::make_unique<PackageQueue>(PackageQueueType::LIFO));
@@ -92,7 +93,7 @@ class Ramp : public PackageSender
 {
 public:
     Ramp(ElementID id, TimeOffset di)
-        : id_(id), delivery_interval_(di) {}
+        : delivery_interval_(di), id_(id) {}
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const
     {

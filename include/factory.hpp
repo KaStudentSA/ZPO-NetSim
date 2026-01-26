@@ -8,6 +8,7 @@
 
 #include "nodes.hpp"
 #include "types.hpp"
+enum NodeColor {NIEODWIEDZONY, ODWIEDZONY, ZWERYFIKOWANY};
 
 #include <istream>
 #include <string>
