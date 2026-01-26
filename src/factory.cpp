@@ -64,7 +64,24 @@ bool has_reachable_storehouse(const PackageSender* sender, std::map<const Packag
 
 bool Factory::is_consistent()
 {
-    return true;
+  std::map<const PackageSender*, NodeColor> net_color;
+
+  for (const auto& ramp : ramps_) {
+    net_color[&ramp] = NIEODWIEDZONY;
+  }
+  for (const auto& worker : workers_) {
+    net_color[&worker] = NIEODWIEDZONY;
+  }
+
+
+  try {
+    for (const auto& ramp : ramps_) {
+      has_reachable_storehouse(&ramp, net_color);
+    }
+  } catch (std::logic_error&) {
+    return false;
+  }
+  return true;
 }
 
 void Factory::do_deliveries(Time t)
