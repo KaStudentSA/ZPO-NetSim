@@ -27,15 +27,15 @@ public:
     void add(Node&& node){nodes_.emplace_back(std::move(node));}
     void remove_by_id(ElementID id){remove_if(nodes_.begin(), nodes_.end(),
                         [id](Node& node) {
-                          return node.id == id;
+                          return node.get_id() == id;
                         });}
     NodeCollection<Node>::iterator find_by_id(ElementID id) {return std::find_if(nodes_.begin(),nodes_.end(),
                     [id](Node& node) {
-                        return node.id == id;
+                        return node.get_id() == id;
                     });}
     NodeCollection<Node>::const_iterator find_by_id(ElementID id) const {return std::find_if(nodes_.cbegin(),nodes_.cend(),
                     [id](Node& node) {
-                        return node.id == id;
+                        return node.get_id() == id;
                     });}
 
 private:
