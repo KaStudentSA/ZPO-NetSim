@@ -108,7 +108,7 @@ private:
     ElementID id_;
 };
 
-class Worker: public PackageSender
+class Worker: public PackageSender, public IPackageReceiver, public IPackageQueue
     {
 public:
     Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue>);
