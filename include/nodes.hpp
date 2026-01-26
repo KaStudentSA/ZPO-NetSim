@@ -79,16 +79,16 @@ public:
     PackageSender() = default;
     PackageSender(PackageSender&&) = default;
     void send_package();
-    const std::optional<Package>& get_sending_buffer() const {return sending_buffer_;};
+    const std::optional<Package>& get_sending_buffer() const {return sending_buffer;};
 protected:
     void push_package(Package&& p);
-    std::optional<Package> sending_buffer_;
+    std::optional<Package> sending_buffer;
 };
 
 class Ramp : public PackageSender
 {
 public:
-    Ramp(ElementID id, TimeOffset di): id_(id), delivery_interval_(di) {}
+    Ramp(ElementID id, TimeOffset di): id_(id), delivery_interval_(di) {};
     void deliver_goods(Time t);
     TimeOffset get_delivery_interval() const {return delivery_interval_;};
     ElementID get_id() const {return id_;};
@@ -100,13 +100,13 @@ private:
 class Worker: public PackageSender, public IPackageReceiver, public IPackageQueue
     {
 public:
-    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue>);
+    Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : id_(id), pd_(pd), start_time_(0),queue_(std::move(q)) {};
     void do_work(Time t);
-    TimeOffset get_processing_duration() const { return processing_duration_; };
-    std::optional<Time> get_package_processing_start_time() const{ return processing_start_time_;};
+    TimeOffset get_processing_duration() const { return pd_; };
+    Time get_package_processing_start_time() const{ return start_time_;};
 
 
-    void receive_package(Package&& p) override;
+    void receive_package(Package&& p) override { queue_->push(std::move(p)); };
     ElementID get_id() const override {return id_;};
     ReceiverType get_receiver_type() const override {return receiverType_;};
 
@@ -123,10 +123,10 @@ public:
 
 private:
     ElementID id_;
-    TimeOffset processing_duration_;
-    std::optional<Time> processing_start_time_;
+    TimeOffset pd_;
+    Time start_time_;
     std::unique_ptr<IPackageQueue> queue_;
-    std::optional<Package> sending_buffer_;
+    std::optional<Package> sending_buffer;
     ReceiverType receiverType_ = WORKER;
     };
 

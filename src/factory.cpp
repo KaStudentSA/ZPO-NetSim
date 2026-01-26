@@ -114,8 +114,15 @@ void save_factory_structure(Factory& factory, std::ostream& os) {
   for (const auto ID : id_workers) {
     auto iter = factory.find_worker_by_id(ID);
     os << "WORKER id=" << iter->get_id() << " processing-time=" << iter -> get_processing_duration()
-    << " queue-type=" << get_queue_type() << std::endl;
-    os << std::endl;
+    << " queue-type=";
+    switch (iter->get_queue_type()) {
+      case PackageQueueType::FIFO:
+        os << "FIFO" << std::endl;
+      break;
+      case PackageQueueType::LIFO:
+        os << "LIFO" << std::endl;
+      break;
+    }
   }
   // Storehouse
   std::vector<int> id_storehouses;
@@ -134,7 +141,7 @@ void save_factory_structure(Factory& factory, std::ostream& os) {
     auto iter = factory.find_ramp_by_id(ID);
     std::vector<int> id_worker;
     std::vector<int> id_storehouse;
-    for (const auto receiver: iter -> receiver_preferences.get_preferences() ) {
+    for (const auto receiver: iter -> receiver_preferences_) {
       switch (receiver.first->get_receiver_type()) {
         case ReceiverType::WORKER:
           id_worker.push_back(receiver.first->get_id());
@@ -152,6 +159,7 @@ void save_factory_structure(Factory& factory, std::ostream& os) {
     os << std::endl;
   }
 };
+
 Factory load_factory_structure(std::istream& is) {
   ParsedLineData parsed_line;
   Factory factory;
@@ -167,7 +175,11 @@ Factory load_factory_structure(std::istream& is) {
       factory.add_ramp(std::move(ramp));
     }
     if (parsed_line.element_type == ElementType::WORKER) {
-      Worker worker(std::stoi(parsed_line.parameters[id]), std::stoi(parsed_line.parameters["processing-time"]), std::stoi(parsed_line.parameters["queue-type"]));
+      PackageQueueType type;
+      if (parsed_line.parameters["queue-type"] == "FIFO") type = PackageQueueType::FIFO;
+      if (parsed_line.parameters["queue-type"] == "LIFO") type = PackageQueueType::LIFO;
+      Worker worker(std::stoi(parsed_line.parameters[id]), std::stoi(parsed_line.parameters["processing-time"]),
+        std::make_unique<PackageQueue>(type));
       factory.add_worker(std::move(worker));
     }
     if (parsed_line.element_type == ElementType::STOREHOUSE) {
