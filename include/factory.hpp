@@ -9,6 +9,15 @@
 #include "nodes.hpp"
 #include "types.hpp"
 
+#include <istream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <functional>
+#include <map>
+
+enum class ElementType {RAMP, WORKER, STOREHOUSE, LINK };
 template <typename Node>
 class NodeCollection {
 public:
@@ -89,5 +98,14 @@ private:
     NodeCollection<Storehouse> storehouses_;
 };
 
+struct ParsedLineData {
+    ElementType element_type;
+    std::map<std::string, std::string> parameters;
+};
+ParsedLineData parse_line(std::string line);
+void tokenize(std::string& line, std::vector<std::string>& ct, char delimiter);
+
+Factory load_factory_structure(std::istream& is);
+void save_factory_structure(Factory& factory, std::ostream& os);
 
 #endif //NETSIM_FACTORY_HXX
