@@ -19,9 +19,9 @@ list(FILTER LIB_SOURCES EXCLUDE REGEX "src/main.cpp$")
 # Pliki testowe (odkomentuj testy jeśli potrzeba)
 file(GLOB_RECURSE TEST_SOURCES
     tests/main_gtest.cpp
-    #tests/test/test_Factory.cpp
+    tests/test/test_Factory.cpp
     #tests/test/test_factory_io.cpp
-    #tests/test/test_nodes.cpp
+    tests/test/test_nodes.cpp
     tests/test_package.cpp
     #tests/test/test_reports.cpp
     #tests/test/test_simulate.cpp

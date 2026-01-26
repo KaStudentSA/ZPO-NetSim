@@ -3,6 +3,8 @@
 //
 #include "factory.hpp"
 
+#include <stdexcept>
+
 /*
 is_consistent() – sprawdzanie spójności sieci
 
@@ -18,24 +20,95 @@ półproduktów przez robotników
 właściwe metody z klas Ramp i Worker dla każdego elementu z
 właściwej kolekcji węzłów.)
 */
+
+
+bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors) {
+    if ( node_colors[sender]== ZWERYFIKOWANY) {
+        return true;
+    }
+    node_colors[sender] = ODWIEDZONY;
+
+    if (sender->receiver_preferences_.preferences.empty()) {
+        throw std::logic_error("The sender has no recipients!");
+    }
+
+    bool has_another_reciever = false;
+    for (const auto& receiver : sender->receiver_preferences_.preferences) {
+        if (receiver.first->get_receiver_type() == ReceiverType::STOREHOUSE) {
+            has_another_reciever = true;
+        }else if (receiver.first->get_receiver_type() == ReceiverType::WORKER) {
+            IPackageReceiver* receiver_ptr = receiver.first;
+            auto worker_ptr = dynamic_cast<Worker*>(receiver_ptr);
+            auto sendrecv_ptr = dynamic_cast<PackageSender*>(worker_ptr);
+
+            if (sendrecv_ptr == sender) {
+                continue;
+            }
+
+            has_another_reciever = true;
+
+            if (node_colors[sender] == NIEODWIEDZONY) {
+                has_reachable_storehouse(sender, node_colors);
+            }
+        }
+    }
+    node_colors[sender] = ZWERYFIKOWANY;
+
+    if (has_another_reciever) {
+        return true;
+    }else {
+        throw std::logic_error("The sender has no recipients!");
+    }
+}
+
+
 bool Factory::is_consistent()
 {
-    return true;
+  std::map<const PackageSender*, NodeColor> net_color;
+
+  for (const auto& ramp : ramps_) {
+    net_color[&ramp] = NIEODWIEDZONY;
+  }
+  for (const auto& worker : workers_) {
+    net_color[&worker] = NIEODWIEDZONY;
+  }
+
+
+  try {
+    for (const auto& ramp : ramps_) {
+      has_reachable_storehouse(&ramp, net_color);
+    }
+  } catch (std::logic_error&) {
+    return false;
+  }
+  return true;
 }
 
 void Factory::do_deliveries(Time t)
 {
-
+    for (auto& ramp : ramps_)
+    {
+        ramp.deliver_goods(t);
+    }
 }
 
 void Factory::do_package_passing()
 {
+    for (auto& ramp : ramps_) {
+        ramp.send_package();
+    }
 
+    for (auto& worker : workers_) {
+        worker.send_package();
+    }
 }
 
 void Factory::do_work(Time t)
 {
-
+    for (auto& worker : workers_)
+    {
+        worker.do_work(t);
+    }
 }
 
 void tokenize(std::string& line, std::vector<std::string>& ct, char delimiter) {
