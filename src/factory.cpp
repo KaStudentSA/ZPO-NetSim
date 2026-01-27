@@ -111,6 +111,36 @@ void Factory::do_work(Time t)
     }
 }
 
+
+void Factory::remove_worker(ElementID id) {
+  auto it = workers_.find_by_id(id);
+  if (it != workers_.end()) {
+    IPackageReceiver* receiver = static_cast<IPackageReceiver*>(&(*it));
+
+   for (auto& ramp : ramps_) {
+      ramp.receiver_preferences_.remove_receiver(receiver);
+    }
+    for (auto& worker : workers_) {
+      worker.receiver_preferences_.remove_receiver(receiver);
+    }
+
+    workers_.remove_by_id(id);
+  }
+}
+
+void Factory::remove_storehouse(ElementID id) {
+  auto it = storehouses_.find_by_id(id);
+  if (it != storehouses_.end()) {
+    IPackageReceiver* receiver = static_cast<IPackageReceiver*>(&(*it));
+
+    for (auto& worker : workers_) {
+      worker.receiver_preferences_.remove_receiver(receiver);
+    }
+
+    storehouses_.remove_by_id(id);
+  }
+}
+
 void tokenize(std::string& line, std::vector<std::string>& ct, char delimiter) {
   std::istringstream stream(line);
   std::string token;
