@@ -1,30 +1,36 @@
 #include "nodes.hpp"
+
 void Storehouse::receive_package(Package&& p) {
     d_ -> push(std::move(p));
 }
 void ReceiverPreferences::add_receiver(IPackageReceiver *r) {
-    preferences_.emplace(r, 1);
-    for (auto &[fst, snd] : preferences_)
-    {
-        snd = 1 / static_cast<double>(preferences_.size());
+    double size = preferences.size();
+    double probability = size / (size + 1);
+
+    if (preferences.empty()) preferences.emplace(r, 1.);
+    else {
+        for (auto& elem: preferences) {
+            elem.second *= probability;
+        }
+        preferences.emplace(r, 1 / (size + 1));
     }
 }
 
 void ReceiverPreferences::remove_receiver (IPackageReceiver* r) {
-    preferences_.erase(r);
-    if (!preferences_.empty()) {
-        for (auto & preference : preferences_) {
-            preference.second = 1 / static_cast<double>(preferences_.size());
-        }
+    preferences.erase(r);
+    double size = preferences.size();
+    double pb = (size + 1) / size;
+    for (auto& elem: preferences) {
+        elem.second *= pb;
     }
 }
 IPackageReceiver *ReceiverPreferences::choose_receiver() const {
-    const double dist = probability_generator();
-    double sum_of_ps = 0;
-    for (const auto &[fst, snd] : preferences_) {
-        sum_of_ps += snd;
-        if (sum_of_ps > dist) {
-            return fst;
+    const double dist = pg_();
+    double sum = 0;
+    for (const auto& elem: preferences) {
+        sum += elem.second;
+        if (sum >= dist) {
+            return elem.first;
         }
     }
     return nullptr;
