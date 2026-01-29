@@ -17,7 +17,7 @@ file(GLOB_RECURSE LIB_SOURCES
 file(GLOB_RECURSE TEST_SOURCES
     tests/main_gtest.cpp
     tests/test_Factory.cpp
-    #tests/test_factory_io.cpp
+    tests/test_factory_io.cpp
     tests/test_nodes.cpp
     tests/test_package.cpp
     #tests/test_reports.cpp

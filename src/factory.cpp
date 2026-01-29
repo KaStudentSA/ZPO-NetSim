@@ -243,7 +243,7 @@ void save_factory_structure(Factory& factory, std::ostream& os) {
   }
   // Links
   os << "; == LINKS ==" << std::endl << std::endl;
-  // teraz zapisuje się po koleje RAMP -> WORKER -> STOREHOUSE
+  // --- Sekcja RAMP -> WORKER/STOREHOUSE ---
   for (const auto ID : id_ramps) {
     auto iter = factory.find_ramp_by_id(ID);
     std::vector<int> id_worker;
@@ -263,6 +263,29 @@ void save_factory_structure(Factory& factory, std::ostream& os) {
 
     for (auto id: id_storehouse) os << "LINK src=ramp-" << ID << " dest=store-" << id << std::endl;
     for (auto id: id_worker) os << "LINK src=ramp-" << ID << " dest=worker-" << id << std::endl;
+    os << std::endl;
+  }
+  // --- Sekcja WORKER -> WORKER/STOREHOUSE ---
+  for (const auto ID : id_workers) {
+    auto iter = factory.find_worker_by_id(ID);
+    std::vector<int> id_worker_dest;
+    std::vector<int> id_storehouse_dest;
+
+    for (const auto& receiver : iter->receiver_preferences_) {
+      switch (receiver.first->get_receiver_type()) {
+      case ReceiverType::WORKER:
+        id_worker_dest.push_back(receiver.first->get_id());
+        break;
+      case ReceiverType::STOREHOUSE:
+        id_storehouse_dest.push_back(receiver.first->get_id());
+        break;
+      }
+    }
+    std::sort(id_worker_dest.begin(), id_worker_dest.end());
+    std::sort(id_storehouse_dest.begin(), id_storehouse_dest.end());
+
+    for (auto id : id_storehouse_dest) os << "LINK src=worker-" << ID << " dest=store-" << id << std::endl;
+    for (auto id : id_worker_dest) os << "LINK src=worker-" << ID << " dest=worker-" << id << std::endl;
     os << std::endl;
   }
 };
@@ -308,7 +331,7 @@ Factory load_factory_structure(std::istream& is) {
         }
         if (dest[0] == "store") {
           auto const ramp_iter = factory.find_ramp_by_id(std::stoi(src[1]));
-          auto const store_iter = factory.find_storehouse_by_id(std::stoi(src[1]));
+          auto const store_iter = factory.find_storehouse_by_id(std::stoi(dest[1]));
           ramp_iter->receiver_preferences_.add_receiver(&*store_iter);
         }
       }

@@ -120,6 +120,7 @@ public:
     const_iterator cend() const override {return queue_->cend();};
     size_t size() const override {return queue_->size();};
 
+    IPackageQueue* get_queue() const { return queue_.get(); }
     Package pop() override {return queue_->pop();};
     PackageQueueType get_queue_type() const override {return queue_->get_queue_type();};
 
